@@ -1,18 +1,133 @@
 // Mock card data
 const mockCards = {
   backlog: [
-    { id: 'US-891204', badge: 'US', title: 'Add dark mode toggle to user preferences panel', status: 'Queued', statusType: 'queued' },
-    { id: 'ISSUE-204817', badge: 'Issue', title: 'Fix pagination offset error in search results API', status: 'Queued', statusType: 'queued', isIssue: true },
-    { id: 'US-891299', badge: 'US', title: 'Implement OAuth2 PKCE flow for mobile clients', status: 'Queued', statusType: 'queued' },
+    {
+      id: 'US-891204',
+      badge: 'US',
+      title: 'Add dark mode toggle to user preferences panel',
+      status: 'Queued',
+      statusType: 'queued',
+      description: 'Add a dark mode toggle to the user preferences panel. Persist the choice in local storage and ensure all UI components respect the selected theme.',
+      branch: 'hercules/constellation-ui: (not yet created)',
+      timeline: [
+        { time: '—', msg: 'Waiting in backlog' }
+      ]
+    },
+    {
+      id: 'ISSUE-204817',
+      badge: 'Issue',
+      title: 'Fix pagination offset error in search results API',
+      status: 'Queued',
+      statusType: 'queued',
+      isIssue: true,
+      description: 'Search results API returns duplicate items on page boundaries when the underlying dataset changes mid-query. Investigate offset calculation and add pagination tests.',
+      branch: 'hercules/dx-api: (not yet created)',
+      timeline: [
+        { time: '—', msg: 'Waiting in backlog' }
+      ]
+    },
+    {
+      id: 'US-891299',
+      badge: 'US',
+      title: 'Implement OAuth2 PKCE flow for mobile clients',
+      status: 'Queued',
+      statusType: 'queued',
+      description: 'Implement the OAuth2 Authorization Code flow with PKCE for mobile clients. Update the auth service and add an integration test that exercises the full flow.',
+      branch: 'hercules/dx-api: (not yet created)',
+      timeline: [
+        { time: '—', msg: 'Waiting in backlog' }
+      ]
+    },
   ],
   inProgress: [
-    { id: 'US-741927', badge: 'US', title: 'Centralize session connection management', status: 'Modifying files...', statusType: 'inprogress', isSpinner: true },
-    { id: 'ISSUE-136529', badge: 'Issue', title: 'Support Electron v38 runtime compatibility', status: 'Creating pull request...', statusType: 'inprogress', isSpinner: true, isIssue: true },
+    {
+      id: 'US-741927',
+      badge: 'US',
+      title: 'Centralize session connection management',
+      status: 'Modifying files...',
+      statusType: 'inprogress',
+      isSpinner: true,
+      description: 'Refactor the session connection logic to use a centralized connection manager instead of per-component WebSocket instances. This will reduce memory usage and provide a single source of truth for connection state across the application.',
+      branch: 'hercules/constellation-ui: US-741927_CentralizeSessionConnection_CI_',
+      timeline: [
+        { time: '14:32:01', msg: 'Analyzing work item...' },
+        { time: '14:32:08', msg: 'Reading codebase...' },
+        { time: '14:32:22', msg: 'Searching codebase...' },
+        { time: '14:32:35', msg: 'Running commands...' },
+        { time: '14:32:41', msg: 'Working with Git...' },
+        { time: '14:33:12', msg: '⟳ Modifying files...', active: true },
+      ]
+    },
+    {
+      id: 'ISSUE-136529',
+      badge: 'Issue',
+      title: 'Support Electron v38 runtime compatibility',
+      status: 'Creating pull request...',
+      statusType: 'inprogress',
+      isSpinner: true,
+      isIssue: true,
+      description: 'Upgrade native dependencies and update build configuration to support Electron v38. Ensure auto-updater and IPC bridges continue to work after the runtime bump.',
+      branch: 'hercules/constellation-ui: ISSUE-136529_ElectronV38_CI_',
+      timeline: [
+        { time: '14:18:42', msg: 'Analyzing work item...' },
+        { time: '14:19:05', msg: 'Reading codebase...' },
+        { time: '14:21:18', msg: 'Modifying files...' },
+        { time: '14:24:51', msg: 'Running commands...' },
+        { time: '14:26:09', msg: 'Working with Git...' },
+        { time: '14:27:33', msg: '⟳ Creating pull request...', active: true },
+      ]
+    },
   ],
   review: [
-    { id: 'US-740188', badge: 'US', title: 'Migrate legacy API endpoints to v3 schema', status: 'Draft PR created', statusType: 'review', reviewed: true },
-    { id: 'BUG-980744', badge: 'Bug', title: 'Memory leak in WebSocket reconnection handler', status: 'Draft PR created', statusType: 'review', reviewed: true, isBug: true },
+    {
+      id: 'US-740188',
+      badge: 'US',
+      title: 'Migrate legacy API endpoints to v3 schema',
+      status: 'Draft PR created',
+      statusType: 'review',
+      reviewed: true,
+      description: 'Migrate the remaining v2 API endpoints to the v3 schema. Backwards-compatible adapters should route v2 callers to the new handlers until clients are upgraded.',
+      branch: 'hercules/dx-api: US-740188_MigrateV3Schema_CI_',
+      timeline: [
+        { time: '13:02:11', msg: 'Analyzing work item...' },
+        { time: '13:03:48', msg: 'Modifying files...' },
+        { time: '13:09:24', msg: 'Running commands...' },
+        { time: '13:11:02', msg: 'Working with Git...' },
+        { time: '13:12:40', msg: '✓ Draft PR created', active: false },
+      ]
+    },
+    {
+      id: 'BUG-980744',
+      badge: 'Bug',
+      title: 'Memory leak in WebSocket reconnection handler',
+      status: 'Draft PR created',
+      statusType: 'review',
+      reviewed: true,
+      isBug: true,
+      description: 'WebSocket reconnection handler retains references to closed sockets, causing memory growth on long-running sessions. Fix the cleanup logic and add a regression test.',
+      branch: 'hercules/constellation-ui: BUG-980744_WebSocketLeak_CI_',
+      timeline: [
+        { time: '11:48:09', msg: 'Analyzing work item...' },
+        { time: '11:49:15', msg: 'Reading codebase...' },
+        { time: '11:51:42', msg: 'Modifying files...' },
+        { time: '11:54:30', msg: 'Running commands...' },
+        { time: '11:56:18', msg: 'Working with Git...' },
+        { time: '11:57:55', msg: '✓ Draft PR created', active: false },
+      ]
+    },
   ]
+}
+
+const statusLabels = {
+  queued: 'Backlog',
+  inprogress: 'InProgress',
+  review: 'Review'
+}
+
+const statusColors = {
+  queued: '#6b7280',
+  inprogress: '#f59e0b',
+  review: '#10b981'
 }
 
 // Flatten all cards for lookup
@@ -265,16 +380,32 @@ function renderSettings() {
 }
 
 function renderDetail() {
-  const card = allCardsMap[currentCardId] || {
-    id: 'US-741927',
-    title: 'Centralize session connection management',
-    status: 'InProgress',
-    description: 'Refactor the session connection logic to use a centralized connection manager instead of per-component WebSocket instances.',
-    branch: 'hercules/constellation-ui: US-741927_CentralizeSessionConnection_CI_'
+  const card = allCardsMap[currentCardId]
+  if (!card) {
+    return `
+      <div class="main-content detail">
+        <div class="overlay">
+          <div class="dialog">
+            <div class="dialog-title">Item not found</div>
+            <div class="close-row">
+              <button class="btn btn-close" onclick="handleBackClick()">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `
   }
 
-  const statusColor = card.statusType === 'inprogress' ? '#f59e0b' : card.statusType === 'review' ? '#10b981' : '#6b7280'
-  
+  const statusColor = statusColors[card.statusType] || '#6b7280'
+  const statusLabel = statusLabels[card.statusType] || card.statusType
+
+  const timelineHtml = (card.timeline || []).map(entry => `
+    <div class="timeline-entry">
+      <span class="time">${entry.time}</span>
+      <span class="msg ${entry.active ? 'active' : ''}">${entry.msg}</span>
+    </div>
+  `).join('')
+
   return `
     <div class="main-content detail">
       <div class="overlay">
@@ -286,51 +417,28 @@ function renderDetail() {
           <div class="detail-row">
             <div class="detail-label">Status</div>
             <div class="detail-value" style="color: ${statusColor}; font-weight: 600;">
-              ${card.statusType.charAt(0).toUpperCase() + card.statusType.slice(1)}
+              ${statusLabel}
             </div>
           </div>
 
           <div class="detail-row">
             <div class="detail-label">Description</div>
             <div class="detail-value subtle">
-              ${card.description}
+              ${card.description || ''}
             </div>
           </div>
 
           <div class="detail-row">
             <div class="detail-label">Branch</div>
             <div class="branch-info">
-              ${card.branch}
+              ${card.branch || ''}
             </div>
           </div>
 
           <div class="detail-row">
             <div class="detail-label">Agent Timeline</div>
             <div class="timeline">
-              <div class="timeline-entry">
-                <span class="time">14:32:01</span>
-                <span class="msg">Analyzing work item...</span>
-              </div>
-              <div class="timeline-entry">
-                <span class="time">14:32:08</span>
-                <span class="msg">Reading codebase...</span>
-              </div>
-              <div class="timeline-entry">
-                <span class="time">14:32:22</span>
-                <span class="msg">Searching codebase...</span>
-              </div>
-              <div class="timeline-entry">
-                <span class="time">14:32:35</span>
-                <span class="msg">Running commands...</span>
-              </div>
-              <div class="timeline-entry">
-                <span class="time">14:32:41</span>
-                <span class="msg">Working with Git...</span>
-              </div>
-              <div class="timeline-entry">
-                <span class="time">14:33:12</span>
-                <span class="msg active">⟳ Modifying files...</span>
-              </div>
+              ${timelineHtml}
             </div>
           </div>
 
