@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PegaRun — Kanban Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f3f4f6;
+    color: #1a1a1a;
+    overflow: hidden;
+  }
+
+  .titlebar {
+    height: 48px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 12px;
+  }
+  .titlebar .hamburger { font-size: 16px; color: #6b7280; padding: 4px 8px; }
+  .titlebar .back-btn { font-size: 14px; color: #6b7280; padding: 4px 8px; opacity: 0.3; }
+  .titlebar .icon { width: 20px; height: 20px; background: #076bc9; border-radius: 4px; }
+  .titlebar .title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+
+  .app-layout { display: flex; height: calc(100vh - 48px); }
+
+  .nav-pane {
+    width: 200px;
+    background: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; font-size: 14px; color: #374151;
+    border-left: 3px solid transparent;
+  }
+  .nav-item.active {
+    background: #e8f1fb; color: #076bc9;
+    border-left-color: #076bc9; font-weight: 600;
+  }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .main-content {
+    flex: 1; padding: 24px;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  .header {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 20px;
+  }
+  .header-left { display: flex; align-items: center; gap: 12px; }
+  .pega-logo {
+    width: 32px; height: 32px; background: #076bc9;
+    border-radius: 6px; display: flex; align-items: center;
+    justify-content: center; color: white; font-weight: 700; font-size: 18px;
+  }
+  .header-title { font-size: 24px; font-weight: 700; color: #076bc9; }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+  .btn {
+    padding: 8px 16px; border-radius: 6px; border: 1px solid #d1d5db;
+    background: white; font-size: 13px; display: flex;
+    align-items: center; gap: 6px; font-family: inherit;
+  }
+  .toggle-btn { position: relative; padding-left: 50px; }
+  .toggle-btn::before {
+    content: ''; position: absolute; left: 10px; top: 50%;
+    transform: translateY(-50%); width: 32px; height: 18px;
+    background: #10b981; border-radius: 9px;
+  }
+  .toggle-btn::after {
+    content: ''; position: absolute; left: 26px; top: 50%;
+    transform: translateY(-50%); width: 14px; height: 14px;
+    background: white; border-radius: 50%;
+  }
+
+  .kanban-board {
+    flex: 1; display: grid;
+    grid-template-columns: 1fr 1fr 1fr; gap: 12px; overflow: hidden;
+  }
+  .column {
+    background: #f9fafb; border-radius: 12px; padding: 16px;
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  .column-header {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
+  }
+  .column-accent { width: 4px; height: 20px; border-radius: 4px; }
+  .column-accent.backlog { background: #6b7280; }
+  .column-accent.inprogress { background: #f59e0b; }
+  .column-accent.review { background: #10b981; }
+  .column-title { font-size: 14px; font-weight: 600; color: #374151; }
+  .count-badge {
+    background: #e8f1fb; color: #076bc9; font-size: 12px;
+    font-weight: 600; padding: 2px 8px; border-radius: 10px;
+    min-width: 24px; text-align: center;
+  }
+  .cards-container {
+    flex: 1; overflow-y: auto; display: flex;
+    flex-direction: column; gap: 8px;
+  }
+
+  .card {
+    background: white; border-radius: 10px; padding: 14px;
+    border: 1px solid #e5e7eb;
+  }
+  .card-badges { display: flex; gap: 6px; align-items: center; }
+  .badge {
+    background: #e8f1fb; color: #076bc9; font-size: 11px;
+    font-weight: 600; padding: 2px 6px; border-radius: 4px;
+  }
+  .badge.issue { background: #fef3c7; color: #92400e; }
+  .badge.bug { background: #fee2e2; color: #991b1b; }
+  .card-title {
+    font-size: 13px; font-weight: 600; margin-top: 8px;
+    line-height: 1.4; color: #1a1a1a;
+  }
+  .card-status {
+    font-size: 12px; color: #6b7280; margin-top: 4px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .spinner {
+    width: 14px; height: 14px; border: 2px solid #f59e0b33;
+    border-top-color: #f59e0b; border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .card-status.review-status { color: #10b981; }
+
+  .status-bar {
+    margin-top: 12px; background: white; border-radius: 8px;
+    padding: 10px 16px; display: flex; justify-content: space-between;
+    align-items: center; border: 1px solid #e5e7eb;
+  }
+  .status-message { font-size: 12px; color: #6b7280; }
+  .status-counts { display: flex; gap: 16px; }
+  .status-count { display: flex; align-items: center; gap: 4px; font-size: 12px; }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .status-dot.backlog { background: #6b7280; }
+  .status-dot.inprogress { background: #f59e0b; }
+  .status-dot.review { background: #10b981; }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <span class="hamburger">☰</span>
+  <span class="back-btn">←</span>
+  <div class="icon"></div>
+  <span class="title">PegaRun</span>
+</div>
+
+<div class="app-layout">
+  <div class="nav-pane">
+    <div>
+      <div class="nav-item active">
+        <span class="icon">📊</span> Dashboard
+      </div>
+    </div>
+    <div>
+      <div class="nav-item">
+        <span class="icon">⚙️</span> Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="header">
+      <div class="header-left">
+        <div class="pega-logo">P</div>
+        <span class="header-title">PegaRun</span>
+      </div>
+      <div class="header-actions">
+        <button class="btn">🔄 Refresh</button>
+        <button class="btn toggle-btn">Auto-Poll</button>
+      </div>
+    </div>
+
+    <div class="kanban-board">
+      <!-- Backlog Column -->
+      <div class="column">
+        <div class="column-header">
+          <div class="column-accent backlog"></div>
+          <span class="column-title">Backlog</span>
+          <span class="count-badge">3</span>
+        </div>
+        <div class="cards-container">
+          <div class="card">
+            <div class="card-badges">
+              <span class="badge">US-891204</span>
+              <span class="badge">US</span>
+            </div>
+            <div class="card-title">Add dark mode toggle to user preferences panel</div>
+            <div class="card-status">Queued</div>
+          </div>
+          <div class="card">
+            <div class="card-badges">
+              <span class="badge issue">ISSUE-204817</span>
+              <span class="badge issue">Issue</span>
+            </div>
+            <div class="card-title">Fix pagination offset error in search results API</div>
+            <div class="card-status">Queued</div>
+          </div>
+          <div class="card">
+            <div class="card-badges">
+              <span class="badge">US-891299</span>
+              <span class="badge">US</span>
+            </div>
+            <div class="card-title">Implement OAuth2 PKCE flow for mobile clients</div>
+            <div class="card-status">Queued</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- In Progress Column -->
+      <div class="column">
+        <div class="column-header">
+          <div class="column-accent inprogress"></div>
+          <span class="column-title">In Progress</span>
+          <span class="count-badge">2</span>
+        </div>
+        <div class="cards-container">
+          <div class="card">
+            <div class="card-badges">
+              <span class="badge">US-741927</span>
+              <span class="badge">US</span>
+            </div>
+            <div class="card-title">Centralize session connection management</div>
+            <div class="card-status">
+              <div class="spinner"></div>
+              Modifying files...
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-badges">
+              <span class="badge issue">ISSUE-136529</span>
+              <span class="badge issue">Issue</span>
+            </div>
+            <div class="card-title">Support Electron v38 runtime compatibility</div>
+            <div class="card-status">
+              <div class="spinner"></div>
+              Creating pull request...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Column -->
+      <div class="column">
+        <div class="column-header">
+          <div class="column-accent review"></div>
+          <span class="column-title">Review</span>
+          <span class="count-badge">2</span>
+        </div>
+        <div class="cards-container">
+          <div class="card">
+            <div class="card-badges">
+              <span class="badge">US-740188</span>
+              <span class="badge">US</span>
+              <span style="color: #10b981; font-size: 14px;">✓</span>
+            </div>
+            <div class="card-title">Migrate legacy API endpoints to v3 schema</div>
+            <div class="card-status review-status">Draft PR created</div>
+          </div>
+          <div class="card">
+            <div class="card-badges">
+              <span class="badge bug">BUG-980744</span>
+              <span class="badge bug">Bug</span>
+              <span style="color: #10b981; font-size: 14px;">✓</span>
+            </div>
+            <div class="card-title">Memory leak in WebSocket reconnection handler</div>
+            <div class="card-status review-status">Draft PR created</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <span class="status-message">US-741927 — Modifying files in constellation-ui</span>
+      <div class="status-counts">
+        <div class="status-count"><div class="status-dot backlog"></div> 3</div>
+        <div class="status-count"><div class="status-dot inprogress"></div> 2</div>
+        <div class="status-count"><div class="status-dot review"></div> 2</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

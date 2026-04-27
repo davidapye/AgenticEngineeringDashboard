@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PegaRun — Settings</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f3f4f6;
+    color: #1a1a1a;
+    overflow: hidden;
+  }
+
+  .titlebar {
+    height: 48px; background: #ffffff; border-bottom: 1px solid #e5e7eb;
+    display: flex; align-items: center; padding: 0 16px; gap: 12px;
+  }
+  .titlebar .hamburger { font-size: 16px; color: #6b7280; padding: 4px 8px; }
+  .titlebar .back-btn { font-size: 14px; color: #6b7280; padding: 4px 8px; }
+  .titlebar .icon { width: 20px; height: 20px; background: #076bc9; border-radius: 4px; }
+  .titlebar .title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+
+  .app-layout { display: flex; height: calc(100vh - 48px); }
+
+  .nav-pane {
+    width: 200px; background: #ffffff; border-right: 1px solid #e5e7eb;
+    padding: 8px 0; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; font-size: 14px; color: #374151;
+    border-left: 3px solid transparent;
+  }
+  .nav-item.active {
+    background: #e8f1fb; color: #076bc9;
+    border-left-color: #076bc9; font-weight: 600;
+  }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .main-content {
+    flex: 1; padding: 32px; overflow-y: auto;
+  }
+
+  .page-title {
+    font-size: 28px; font-weight: 700; color: #076bc9; margin-bottom: 24px;
+  }
+  .settings-stack { max-width: 700px; display: flex; flex-direction: column; gap: 24px; }
+
+  .card {
+    background: white; border-radius: 10px; padding: 20px;
+    border: 1px solid #e5e7eb;
+  }
+  .section-title {
+    font-size: 16px; font-weight: 700; color: #1a1a1a; margin-bottom: 16px;
+  }
+  .field { margin-bottom: 14px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    display: block; font-size: 13px; font-weight: 600;
+    color: #374151; margin-bottom: 6px;
+  }
+  .field input, .field select {
+    width: 100%; padding: 10px 12px; border: 1px solid #d1d5db;
+    border-radius: 6px; font-size: 14px; font-family: inherit;
+    background: #f9fafb; color: #1a1a1a;
+  }
+  .field input:focus, .field select:focus {
+    outline: none; border-color: #076bc9;
+    box-shadow: 0 0 0 3px rgba(7, 107, 201, 0.12);
+  }
+  .field .hint {
+    font-size: 12px; color: #6b7280; margin-top: 4px;
+  }
+
+  .repo-row {
+    background: #f9fafb; border-radius: 8px; padding: 16px; margin-bottom: 12px;
+  }
+  .repo-row .row-grid {
+    display: grid; grid-template-columns: 1fr 1fr auto; gap: 12px; align-items: end;
+  }
+  .repo-row .desc-row { margin-top: 8px; }
+  .remove-btn {
+    padding: 10px 12px; border-radius: 6px; border: 1px solid #d1d5db;
+    background: white; font-size: 14px; cursor: pointer; color: #ef4444;
+  }
+
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
+  }
+  .add-btn {
+    padding: 6px 14px; border-radius: 6px; border: 1px solid #d1d5db;
+    background: white; font-size: 13px; cursor: pointer; font-family: inherit;
+    color: #076bc9; font-weight: 600;
+  }
+
+  .auth-status {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+  }
+  .auth-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .auth-dot.connected { background: #10b981; }
+  .auth-dot.disconnected { background: #ef4444; }
+  .auth-text { font-size: 13px; }
+
+  .btn {
+    padding: 10px 20px; border-radius: 6px; border: 1px solid #d1d5db;
+    background: white; font-size: 13px; font-family: inherit; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-primary {
+    background: #076bc9; color: white; border-color: #076bc9; font-weight: 600;
+  }
+  .btn-secondary { color: #374151; }
+  .btn-row { display: flex; gap: 8px; align-items: center; }
+  .auth-msg { font-size: 13px; color: #6b7280; margin-bottom: 12px; }
+
+  .save-row {
+    display: flex; gap: 12px; align-items: center;
+  }
+  .save-status {
+    font-size: 13px; color: #10b981; font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <span class="hamburger">☰</span>
+  <span class="back-btn">←</span>
+  <div class="icon"></div>
+  <span class="title">PegaRun</span>
+</div>
+
+<div class="app-layout">
+  <div class="nav-pane">
+    <div>
+      <div class="nav-item">
+        <span class="icon">📊</span> Dashboard
+      </div>
+    </div>
+    <div>
+      <div class="nav-item active">
+        <span class="icon">⚙️</span> Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="page-title">Settings</div>
+    <div class="settings-stack">
+
+      <!-- Agile Studio Configuration -->
+      <div class="card">
+        <div class="section-title">Agile Studio</div>
+        <div class="field">
+          <label>Team ID</label>
+          <input type="text" value="PROJ-2342" />
+        </div>
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" value="John Smith" />
+        </div>
+        <div class="field">
+          <label>Workspace Directory</label>
+          <input type="text" value="C:\Source" />
+        </div>
+      </div>
+
+      <!-- Repository Configuration -->
+      <div class="card">
+        <div class="section-header">
+          <div class="section-title" style="margin-bottom: 0;">Repositories</div>
+          <button class="add-btn">+ Add Repo</button>
+        </div>
+        <div class="hint" style="font-size: 13px; color: #6b7280; margin-bottom: 16px;">
+          Configure the GitHub repositories the agents can work with.
+        </div>
+
+        <div class="repo-row">
+          <div class="row-grid">
+            <div class="field" style="margin-bottom: 0;">
+              <label>Repository (owner/repo)</label>
+              <input type="text" value="pegasystems/constellation-ui" />
+            </div>
+            <div class="field" style="margin-bottom: 0;">
+              <label>Local Path</label>
+              <input type="text" value="C:\Source\constellation-ui" />
+            </div>
+            <button class="remove-btn">🗑</button>
+          </div>
+          <div class="desc-row">
+            <div class="field" style="margin-bottom: 0;">
+              <label>Description (helps agent choose repo)</label>
+              <input type="text" value="Main frontend React application" />
+            </div>
+          </div>
+        </div>
+
+        <div class="repo-row">
+          <div class="row-grid">
+            <div class="field" style="margin-bottom: 0;">
+              <label>Repository (owner/repo)</label>
+              <input type="text" value="pegasystems/pega-dx-api" />
+            </div>
+            <div class="field" style="margin-bottom: 0;">
+              <label>Local Path</label>
+              <input type="text" value="C:\Source\pega-dx-api" />
+            </div>
+            <button class="remove-btn">🗑</button>
+          </div>
+          <div class="desc-row">
+            <div class="field" style="margin-bottom: 0;">
+              <label>Description (helps agent choose repo)</label>
+              <input type="text" value="DX API backend services (Java/Spring)" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Polling Configuration -->
+      <div class="card">
+        <div class="section-title">Polling</div>
+        <div class="field">
+          <label>Check for new items every</label>
+          <select>
+            <option>1 minutes</option>
+            <option selected>5 minutes</option>
+            <option>10 minutes</option>
+            <option>15 minutes</option>
+            <option>30 minutes</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Agent Configuration -->
+      <div class="card">
+        <div class="section-title">Agent</div>
+        <div class="field">
+          <label>AI Model</label>
+          <select>
+            <option selected>claude-sonnet-4.5</option>
+            <option>gpt-5</option>
+            <option>claude-opus-4.5</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- GitHub Authentication -->
+      <div class="card">
+        <div class="section-title">GitHub Authentication</div>
+        <div class="auth-status">
+          <div class="auth-dot connected"></div>
+          <span class="auth-text" style="color: #10b981; font-weight: 600;">Connected</span>
+        </div>
+        <div class="auth-msg">Authenticated as jsmith-pega</div>
+        <div class="btn-row">
+          <button class="btn btn-secondary">Logout</button>
+        </div>
+      </div>
+
+      <!-- Save Button -->
+      <div class="save-row">
+        <button class="btn btn-primary">Save Settings</button>
+        <span class="save-status">✓ Settings saved successfully</span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

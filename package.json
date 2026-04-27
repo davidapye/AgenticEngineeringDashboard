@@ -1,0 +1,29 @@
+{
+  "name": "hercules-dashboard",
+  "version": "1.0.0",
+  "description": "Hercules - Agentic Engineering Dashboard",
+  "main": "index.html",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "serve": "python -m http.server 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidapye/AgenticEngineeringDashboard.git"
+  },
+  "keywords": [
+    "dashboard",
+    "agentic",
+    "engineering",
+    "kanban"
+  ],
+  "author": "David Apye",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/davidapye/AgenticEngineeringDashboard/issues"
+  },
+  "homepage": "https://github.com/davidapye/AgenticEngineeringDashboard#readme",
+  "dependencies": {}
+}

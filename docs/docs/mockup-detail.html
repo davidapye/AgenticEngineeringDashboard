@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PegaRun — Item Detail</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f3f4f6; color: #1a1a1a; overflow: hidden;
+  }
+
+  .titlebar {
+    height: 48px; background: #ffffff; border-bottom: 1px solid #e5e7eb;
+    display: flex; align-items: center; padding: 0 16px; gap: 12px;
+  }
+  .titlebar .hamburger { font-size: 16px; color: #6b7280; padding: 4px 8px; }
+  .titlebar .back-btn { font-size: 14px; color: #6b7280; padding: 4px 8px; opacity: 0.3; }
+  .titlebar .icon { width: 20px; height: 20px; background: #076bc9; border-radius: 4px; }
+  .titlebar .title { font-size: 13px; font-weight: 600; color: #1a1a1a; }
+
+  .app-layout { display: flex; height: calc(100vh - 48px); }
+  .nav-pane {
+    width: 200px; background: #ffffff; border-right: 1px solid #e5e7eb;
+    padding: 8px 0; display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 16px; font-size: 14px; color: #374151;
+    border-left: 3px solid transparent;
+  }
+  .nav-item.active { background: #e8f1fb; color: #076bc9; border-left-color: #076bc9; font-weight: 600; }
+  .nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .main-content { flex: 1; position: relative; }
+
+  /* Dimmed background */
+  .overlay {
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.4); display: flex; align-items: center;
+    justify-content: center; z-index: 10;
+  }
+
+  /* Dialog */
+  .dialog {
+    background: white; border-radius: 12px; padding: 24px;
+    width: 520px; max-height: 80vh; overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  }
+  .dialog-title {
+    font-size: 18px; font-weight: 700; color: #1a1a1a; margin-bottom: 20px;
+  }
+  .dialog-title .id { color: #076bc9; }
+
+  .detail-row {
+    margin-bottom: 16px;
+  }
+  .detail-label {
+    font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 4px;
+  }
+  .detail-value {
+    font-size: 14px; color: #1a1a1a; line-height: 1.5;
+  }
+  .detail-value.subtle { color: #6b7280; font-size: 13px; }
+
+  .timeline {
+    margin-top: 4px;
+  }
+  .timeline-entry {
+    font-size: 12px; color: #6b7280; padding: 3px 0;
+    display: flex; gap: 8px;
+  }
+  .timeline-entry .time { color: #9ca3af; min-width: 60px; font-variant-numeric: tabular-nums; }
+  .timeline-entry .msg { color: #374151; }
+  .timeline-entry .msg.active { color: #f59e0b; font-weight: 600; }
+
+  .notes-input {
+    width: 100%; padding: 10px 12px; border: 1px solid #d1d5db;
+    border-radius: 6px; font-size: 14px; font-family: inherit;
+    background: #f9fafb; resize: vertical; min-height: 60px;
+  }
+  .notes-input::placeholder { color: #9ca3af; }
+  .notes-input:focus {
+    outline: none; border-color: #076bc9;
+    box-shadow: 0 0 0 3px rgba(7, 107, 201, 0.12);
+  }
+
+  .action-row {
+    display: flex; gap: 8px; margin-top: 12px;
+  }
+  .btn {
+    padding: 8px 16px; border-radius: 6px; border: 1px solid #d1d5db;
+    background: white; font-size: 13px; font-family: inherit; cursor: pointer;
+  }
+  .btn-primary { background: #076bc9; color: white; border-color: #076bc9; font-weight: 600; }
+  .btn-warn { color: #ef4444; border-color: #fca5a5; }
+
+  .close-row {
+    display: flex; justify-content: flex-end; margin-top: 20px;
+    padding-top: 16px; border-top: 1px solid #e5e7eb;
+  }
+  .btn-close { padding: 8px 24px; }
+
+  .branch-info {
+    background: #f9fafb; padding: 8px 12px; border-radius: 6px;
+    font-family: 'Consolas', 'Courier New', monospace; font-size: 12px;
+    color: #076bc9; border: 1px solid #e5e7eb;
+  }
+</style>
+</head>
+<body>
+
+<div class="titlebar">
+  <span class="hamburger">☰</span>
+  <span class="back-btn">←</span>
+  <div class="icon"></div>
+  <span class="title">PegaRun</span>
+</div>
+
+<div class="app-layout">
+  <div class="nav-pane">
+    <div>
+      <div class="nav-item active">
+        <span class="icon">📊</span> Dashboard
+      </div>
+    </div>
+    <div>
+      <div class="nav-item">
+        <span class="icon">⚙️</span> Settings
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="overlay">
+      <div class="dialog">
+        <div class="dialog-title">
+          <span class="id">US-741927</span> — Centralize session connection management
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-label">Status</div>
+          <div class="detail-value" style="color: #f59e0b; font-weight: 600;">InProgress</div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-label">Description</div>
+          <div class="detail-value subtle">
+            Refactor the session connection logic to use a centralized connection manager instead of
+            per-component WebSocket instances. This will reduce memory usage and provide a single source
+            of truth for connection state across the application.
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-label">Branch</div>
+          <div class="branch-info">
+            pegasystems/constellation-ui: US-741927_CentralizeSessionConnection_CI_
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-label">Agent Timeline</div>
+          <div class="timeline">
+            <div class="timeline-entry">
+              <span class="time">14:32:01</span>
+              <span class="msg">Analyzing work item...</span>
+            </div>
+            <div class="timeline-entry">
+              <span class="time">14:32:08</span>
+              <span class="msg">Reading codebase...</span>
+            </div>
+            <div class="timeline-entry">
+              <span class="time">14:32:22</span>
+              <span class="msg">Searching codebase...</span>
+            </div>
+            <div class="timeline-entry">
+              <span class="time">14:32:35</span>
+              <span class="msg">Running commands...</span>
+            </div>
+            <div class="timeline-entry">
+              <span class="time">14:32:41</span>
+              <span class="msg">Working with Git...</span>
+            </div>
+            <div class="timeline-entry">
+              <span class="time">14:33:12</span>
+              <span class="msg active">⟳ Modifying files...</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-row">
+          <div class="detail-label">Add notes to help the agent</div>
+          <textarea class="notes-input" placeholder="Add notes to help the agent..."></textarea>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-primary">Send Notes</button>
+          <button class="btn">Pause</button>
+          <button class="btn btn-warn">Cancel</button>
+        </div>
+
+        <div class="close-row">
+          <button class="btn btn-close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
