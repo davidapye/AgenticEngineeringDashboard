@@ -1,6 +1,6 @@
 # Hercules — Agentic Engineering Dashboard
 
-A beautiful, fully interactive single-page application (SPA) dashboard mockup showcasing an agentic engineering workflow management system. Built with vanilla JavaScript, HTML, and CSS for maximum portability.
+A beautiful, fully interactive single-page application (SPA) dashboard mockup showcasing an agentic engineering workflow management system. Built with vanilla JavaScript, HTML, and CSS for maximum portability. This dashboard would utilize the GitHub Copilot SDK and MCP server integration. Polling the MCP server for User stories or issues assigned to the User and then working on them in parellel. 
 
 ## 🎯 Features
 
